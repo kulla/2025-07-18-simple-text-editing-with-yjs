@@ -66,13 +66,13 @@ export default function App() {
   return (
     <main className="prose p-10">
       <h1>Richtext element:</h1>
-      <ContentEditable />
+      {renderContentEditable()}
       <h1>State:</h1>
       <pre>{JSON.stringify({ cursor, text }, undefined, 2)}</pre>
     </main>
   )
 
-  function ContentEditable() {
+  function renderContentEditable() {
     return (
       <p
         id="contenteditable"
@@ -81,12 +81,12 @@ export default function App() {
         suppressContentEditableWarning
         spellCheck="false"
       >
-        <RichTextForEditMode />
+        {renderRichText()}
       </p>
     )
   }
 
-  function RichTextForEditMode() {
+  function renderRichText() {
     let position = 0
     const spans = []
 
