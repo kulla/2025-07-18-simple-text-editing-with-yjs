@@ -51,7 +51,12 @@ export default function App() {
 
   function ContentEditable() {
     return (
-      <p>
+      <p
+        className="border p-4 rounded"
+        contentEditable
+        suppressContentEditableWarning
+        spellCheck="false"
+      >
         <RichTextForEditMode />
       </p>
     )
