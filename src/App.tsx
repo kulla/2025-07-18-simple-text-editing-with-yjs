@@ -90,18 +90,18 @@ export default function App() {
     let position = 0
     const spans = []
 
-    for (const insert of text) {
+    for (const element of text) {
       spans.push(
         <span
-          key={position}
-          className={getClassNames(insert)}
+          key={element.insert}
+          className={getClassNames(element)}
           data-position={position}
         >
-          {insert.insert}
+          {element.insert}
         </span>,
       )
 
-      position += insert.insert.length
+      position += element.insert.length
     }
 
     return spans
