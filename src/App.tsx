@@ -28,7 +28,7 @@ export default function App() {
       }
     },
     () => {
-      const text = ytext.toDelta()
+      const text = ytext.toDelta() as RichText
       const state = { text }
 
       if (prevState.current !== null && R.equals(prevState.current, state)) {
@@ -42,12 +42,42 @@ export default function App() {
 
   return (
     <main className="prose p-10">
-      <h1>Rsbuild with React</h1>
-      <p>Start building amazing things with Rsbuild.</p>
-      <h1>State</h1>
+      <h1>Richtext element:</h1>
+      <ContentEditable />
+      <h1>State:</h1>
       <pre>{JSON.stringify({ text }, undefined, 2)}</pre>
     </main>
   )
+
+  function ContentEditable() {
+    return (
+      <p>
+        <RichTextForEditMode />
+      </p>
+    )
+  }
+
+  function RichTextForEditMode() {
+    return (
+      <>
+        {text.map((insert, index) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+          <span key={index} className={getClassNames(insert)}>
+            {insert.insert}
+          </span>
+        ))}
+      </>
+    )
+  }
+
+  function getClassNames(insert: Insert): string {
+    const classes = []
+    if (insert.attributes?.bold) classes.push('font-bold')
+    if (insert.attributes?.italic) classes.push('italic')
+    if (insert.attributes?.href) classes.push('text-blue-500 underline')
+
+    return classes.join(' ')
+  }
 }
 
 interface State {
@@ -57,7 +87,7 @@ interface State {
 type RichText = Insert[]
 
 interface Insert {
-  text: string
+  insert: string
   attributes?: {
     bold?: boolean
     italic?: boolean
