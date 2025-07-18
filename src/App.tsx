@@ -47,15 +47,12 @@ export default function App() {
 
     const newCursor = getCursor(selection)
 
-    console.log('Selection changed:', newCursor)
-
     if (R.equals(newCursor, ystate.get('cursor'))) return
 
     ystate.set('cursor', newCursor)
   }, [])
 
   useEffect(() => {
-    console.log('App mounted, adding selectionchange listener')
     document.addEventListener('selectionchange', handleSelectionChange)
 
     return () => {
