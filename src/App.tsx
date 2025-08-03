@@ -1,7 +1,14 @@
 import * as R from 'ramda'
 import * as Y from 'yjs'
 import './App.css'
-import { useCallback, useEffect, useRef, useSyncExternalStore } from 'react'
+import {
+  type KeyboardEventHandler,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useSyncExternalStore,
+} from 'react'
 
 const ydoc = new Y.Doc()
 const ystate = ydoc.getMap('state')
@@ -42,6 +49,50 @@ export default function App() {
     },
   )
 
+  const handleKeyDown: KeyboardEventHandler = useCallback(
+    (event) => {
+      if (cursor == null) return
+      if (event.key.startsWith('Arrow')) return
+      if (event.ctrlKey && event.key === 'r') return
+
+      const { start, end } = cursor
+      const isCollapsed = start === end
+
+      event.preventDefault()
+
+      if (event.key === 'Backspace' || event.key === 'Delete') {
+      } else if (
+        !event.ctrlKey &&
+        !event.metaKey &&
+        !event.altKey &&
+        event.key.length === 1
+      ) {
+        if (isCollapsed) {
+          // Insert character at the cursor position
+          ytext.insert(start, event.key)
+          ystate.set('cursor', { start: start + 1, end: start + 1 })
+        }
+      }
+    },
+    [cursor],
+  )
+
+  useLayoutEffect(() => {
+    const selection = window.getSelection()
+
+    if (selection == null) return
+    if (R.equals(getCursor(selection), cursor) && selection.rangeCount === 1)
+      return
+
+    selection.removeAllRanges()
+
+    const range = getRange(cursor)
+
+    if (range == null) return
+
+    selection.addRange(range)
+  }, [cursor])
+
   const handleSelectionChange = useCallback(() => {
     const selection = window.getSelection()
 
@@ -77,6 +128,7 @@ export default function App() {
         contentEditable
         suppressContentEditableWarning
         spellCheck="false"
+        onKeyDown={handleKeyDown}
       >
         {renderRichText()}
       </p>
@@ -148,6 +200,52 @@ function getPosition(node: Node | null, offset: number | null): number | null {
   if (Number.isNaN(pos)) return null
 
   return pos + offset
+}
+
+function getRange(cursor: Cursor | null): Range | null {
+  if (cursor === null) return null
+
+  const contentEditable = document.getElementById('contenteditable')
+  if (contentEditable === null) return null
+
+  const start = getElementAndOffset(cursor.start)
+  const end = getElementAndOffset(cursor.end)
+
+  if (start === null || end === null) return null
+
+  const range = document.createRange()
+  range.setStart(start.node, start.offset)
+  range.setEnd(end.node, end.offset)
+
+  return range
+}
+
+function getElementAndOffset(
+  position: number,
+): { node: Node; offset: number } | null {
+  const contentEditable = document.getElementById('contenteditable')
+  if (contentEditable === null) return null
+
+  const elements = contentEditable.querySelectorAll('span')
+
+  for (let i = 0; i < elements.length; i++) {
+    const element = elements.item(i)
+    const elementPosition = Number.parseInt(element.dataset.position ?? '', 10)
+    if (Number.isNaN(elementPosition)) continue
+
+    const textContent = element.textContent || ''
+    if (
+      elementPosition <= position &&
+      position < elementPosition + textContent.length
+    ) {
+      const offset = position - elementPosition
+      if (element.firstChild) {
+        return { node: element.firstChild, offset }
+      }
+    }
+  }
+
+  return null
 }
 
 interface State {
