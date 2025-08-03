@@ -80,11 +80,10 @@ export default function App() {
         !event.altKey &&
         event.key.length === 1
       ) {
-        if (isCollapsed) {
-          // Insert character at the cursor position
-          ytext.insert(start, event.key)
-          ystate.set('cursor', { start: start + 1, end: start + 1 })
-        }
+        deleteSelection()
+
+        ytext.insert(start, event.key)
+        ystate.set('cursor', { start: start + 1, end: start + 1 })
       }
 
       function deleteSelection() {
