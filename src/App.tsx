@@ -110,6 +110,10 @@ export default function App() {
     selection.addRange(range)
   }, [cursor])
 
+  useEffect(() => {
+    ystate.set('cursor', { start: 0, end: 0 })
+  }, [])
+
   const handleSelectionChange = useCallback(() => {
     const selection = window.getSelection()
 
