@@ -60,7 +60,14 @@ export default function App() {
 
       event.preventDefault()
 
-      if (event.key === 'Backspace' || event.key === 'Delete') {
+      if (event.key === 'Backspace') {
+        if (isCollapsed && start > 0) {
+          ytext.delete(start - 1, 1)
+          ystate.set('cursor', { start: start - 1, end: start - 1 })
+        } else if (!isCollapsed) {
+          ytext.delete(start, end - start)
+          ystate.set('cursor', { start, end: start })
+        }
       } else if (
         !event.ctrlKey &&
         !event.metaKey &&
