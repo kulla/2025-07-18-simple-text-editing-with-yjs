@@ -15,7 +15,7 @@
     "clsx": "^2.1.1",
     "ramda": "^0.31.3",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react-dom": "^19.1.1",
     "yjs": "^13.6.27"
   },
   "devDependencies": {
@@ -26,7 +26,7 @@
     "@tailwindcss/typography": "^0.5.16",
     "@types/ramda": "^0.30.2",
     "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
+    "@types/react-dom": "^19.1.7",
     "daisyui": "^5.0.46",
     "tailwindcss": "^4.1.11",
     "typescript": "^5.8.3"
