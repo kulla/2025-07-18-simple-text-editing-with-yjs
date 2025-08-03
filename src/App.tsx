@@ -65,8 +65,14 @@ export default function App() {
           ytext.delete(start - 1, 1)
           ystate.set('cursor', { start: start - 1, end: start - 1 })
         } else if (!isCollapsed) {
-          ytext.delete(start, end - start)
-          ystate.set('cursor', { start, end: start })
+          deleteSelection()
+        }
+      } else if (event.key === 'Delete') {
+        if (isCollapsed && end < ytext.length) {
+          ytext.delete(end, 1)
+          ystate.set('cursor', { start: end, end: end })
+        } else if (!isCollapsed) {
+          deleteSelection()
         }
       } else if (
         !event.ctrlKey &&
@@ -80,6 +86,12 @@ export default function App() {
           ystate.set('cursor', { start: start + 1, end: start + 1 })
         }
       }
+
+      function deleteSelection() {
+        if (isCollapsed) return
+        ytext.delete(start, end - start)
+        ystate.set('cursor', { start, end: start })
+      }
     },
     [cursor],
   )
@@ -88,8 +100,7 @@ export default function App() {
     const selection = window.getSelection()
 
     if (selection == null) return
-    if (R.equals(getCursor(selection), cursor) && selection.rangeCount === 1)
-      return
+    if (R.equals(getCursor(selection), cursor)) return
 
     selection.removeAllRanges()
 
