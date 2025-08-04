@@ -21,7 +21,7 @@ ytext.insert(0, 'Hello ')
 ytext.insert(ytext.length, 'World', { bold: true })
 ytext.insert(ytext.length, '! ', {})
 ytext.insert(ytext.length, 'A sentence with a ', {})
-ytext.insert(ytext.length, 'link', { href: 'https://example.com' })
+ytext.insert(ytext.length, 'code text', { code: true })
 ytext.insert(ytext.length, ' and some ', {})
 ytext.insert(ytext.length, 'italic text', { italic: true })
 
@@ -181,7 +181,8 @@ export default function App() {
     const classes = []
     if (insert.attributes?.bold) classes.push('font-bold')
     if (insert.attributes?.italic) classes.push('italic')
-    if (insert.attributes?.href) classes.push('text-blue-500 underline')
+    if (insert.attributes?.code)
+      classes.push('font-mono color-gray-600 bg-gray-600')
 
     return classes.join(' ')
   }
@@ -286,6 +287,6 @@ interface Insert {
   attributes?: {
     bold?: boolean
     italic?: boolean
-    href?: string
+    code?: boolean
   }
 }
