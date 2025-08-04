@@ -87,21 +87,23 @@ export default function App() {
         ytext.insert(start, event.key, attributesForInsert)
         ystate.set('cursor', { start: start + 1, end: start + 1 })
       } else if (event.ctrlKey) {
-        if (event.key === 'b') {
-          setAttributesForInsert((prev) => ({
-            ...prev,
-            bold: !prev.bold,
-          }))
-        } else if (event.key === 'i') {
-          setAttributesForInsert((prev) => ({
-            ...prev,
-            italic: !prev.italic,
-          }))
-        } else if (event.key === 'c') {
-          setAttributesForInsert((prev) => ({
-            ...prev,
-            code: !prev.code,
-          }))
+        if (isCollapsed) {
+          if (event.key === 'b') {
+            setAttributesForInsert((prev) => ({
+              ...prev,
+              bold: !prev.bold,
+            }))
+          } else if (event.key === 'i') {
+            setAttributesForInsert((prev) => ({
+              ...prev,
+              italic: !prev.italic,
+            }))
+          } else if (event.key === 'c') {
+            setAttributesForInsert((prev) => ({
+              ...prev,
+              code: !prev.code,
+            }))
+          }
         }
       }
 
