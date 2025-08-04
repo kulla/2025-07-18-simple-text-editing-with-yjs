@@ -7,6 +7,7 @@ import {
   useEffect,
   useLayoutEffect,
   useRef,
+  useState,
   useSyncExternalStore,
 } from 'react'
 
@@ -26,6 +27,7 @@ ytext.insert(ytext.length, ' and some ', {})
 ytext.insert(ytext.length, 'italic text', { italic: true })
 
 export default function App() {
+  const [attributesForInsert, setAttributesForInsert] = useState<Attributes>({})
   const prevState = useRef<State>(null)
   const { text, cursor } = useSyncExternalStore(
     (callback) => {
@@ -82,8 +84,25 @@ export default function App() {
       ) {
         deleteSelection()
 
-        ytext.insert(start, event.key)
+        ytext.insert(start, event.key, attributesForInsert)
         ystate.set('cursor', { start: start + 1, end: start + 1 })
+      } else if (event.ctrlKey) {
+        if (event.key === 'b') {
+          setAttributesForInsert((prev) => ({
+            ...prev,
+            bold: !prev.bold,
+          }))
+        } else if (event.key === 'i') {
+          setAttributesForInsert((prev) => ({
+            ...prev,
+            italic: !prev.italic,
+          }))
+        } else if (event.key === 'c') {
+          setAttributesForInsert((prev) => ({
+            ...prev,
+            code: !prev.code,
+          }))
+        }
       }
 
       function deleteSelection() {
@@ -92,7 +111,7 @@ export default function App() {
         ystate.set('cursor', { start, end: start })
       }
     },
-    [cursor],
+    [cursor, attributesForInsert],
   )
 
   useLayoutEffect(() => {
@@ -137,7 +156,9 @@ export default function App() {
       <h1>Richtext element:</h1>
       {renderContentEditable()}
       <h1>State:</h1>
-      <pre>{JSON.stringify({ cursor, text }, undefined, 2)}</pre>
+      <pre>
+        {JSON.stringify({ attributesForInsert, cursor, text }, undefined, 2)}
+      </pre>
     </main>
   )
 
@@ -284,9 +305,11 @@ type RichText = Insert[]
 
 interface Insert {
   insert: string
-  attributes?: {
-    bold?: boolean
-    italic?: boolean
-    code?: boolean
-  }
+  attributes?: Attributes
+}
+
+interface Attributes {
+  bold?: boolean
+  italic?: boolean
+  code?: boolean
 }
