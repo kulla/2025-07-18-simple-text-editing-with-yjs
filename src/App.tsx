@@ -27,7 +27,9 @@ ytext.insert(ytext.length, ' and some ', {})
 ytext.insert(ytext.length, 'italic text', { italic: true })
 
 export default function App() {
-  const [attributesForInsert, setAttributesForInsert] = useState<Attributes>({})
+  const [attributesForInsert, setAttributesForInsert] = useState<
+    Attributes | undefined
+  >(undefined)
   const prevState = useRef<State>(null)
   const { text, cursor } = useSyncExternalStore(
     (callback) => {
@@ -156,6 +158,7 @@ export default function App() {
     if (R.equals(newCursor, ystate.get('cursor'))) return
 
     ystate.set('cursor', newCursor)
+    setAttributesForInsert(undefined)
   }, [])
 
   useEffect(() => {
