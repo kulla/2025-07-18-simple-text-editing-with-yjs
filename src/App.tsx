@@ -159,6 +159,23 @@ export default function App() {
     <main className="prose p-10">
       <h1>Richtext element:</h1>
       {renderContentEditable()}
+      <h1>Notes</h1>
+      <p>
+        I was too lazy to implement a toolbar here. Use the following keyboard
+        shortcuts for formatting:
+      </p>
+      <ul>
+        <li>
+          <code>Ctrl + b</code> – <span className="font-mono">bold</span>
+        </li>
+        <li>
+          <code>Ctrl + i</code> – <span className="italic">italic</span>
+        </li>
+        <li>
+          <code>Ctrl + c</code> –{' '}
+          <span className="font-mono color-gray-600 bg-gray-600">code</span>
+        </li>
+      </ul>
       <h1>State:</h1>
       <pre>
         {JSON.stringify({ attributesForInsert, cursor, text }, undefined, 2)}
